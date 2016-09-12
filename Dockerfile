@@ -11,7 +11,6 @@ RUN apt-get update \
    | tar x -C /tmp/ \
   && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
   && apt-get install git-lfs \
-  && git lfs install \
   && curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python \
   && pip install pandas \
   && git clone https://github.com/apache/zeppelin.git /tmp/zeppelin \
@@ -19,8 +18,8 @@ RUN apt-get update \
   && git checkout $BRANCH \
   && sed -i 's/"angular":/"highcharts": "^4.2.6","angular":/' /tmp/zeppelin/zeppelin-web/bower.json \
   && sed -i 's#"highlightjs": {#"highcharts": {"main": ["highcharts.js","highcharts-more.js","modules/exporting.js","modules/drilldown.js","modules/maps.js"]},"highlightjs": {#' /tmp/zeppelin/zeppelin-web/bower.json \
-  && xmlstarlet ed -s /_:project/_:dependencies -t elem -n dependency -v zeppelin-highcharts /tmp/zeppelin/spark-dependencies/pom.xml > pom2.xml \
-  && sed -i "s:zeppelin-highcharts:<groupId>com.knockdata</groupId><artifactId>spark-highcharts</artifactId><version>$SPARK_HIGHCHART_VERSION</version>:" pom2.xml \
+  && xmlstarlet ed -s /_:project/_:dependencies -t elem -n dependency -v spark-highcharts /tmp/zeppelin/spark-dependencies/pom.xml > pom2.xml \
+  && sed -i "s:spark-highcharts:<groupId>com.knockdata</groupId><artifactId>spark-highcharts</artifactId><version>$SPARK_HIGHCHART_VERSION</version>:" pom2.xml \
   && mv -f pom2.xml /tmp/zeppelin/spark-dependencies/pom.xml \
   && cd /tmp/zeppelin \
   && /tmp/apache-maven-3.3.9/bin/mvn package -Pbuild-distr -Ppyspark -Pspark-2.0 -Pscala-2.11 -DskipTests \
