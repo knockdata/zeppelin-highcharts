@@ -2,7 +2,7 @@ FROM openjdk:8
 
 ENV BRANCH  v0.6.1
 ENV ZEPPELIN_HOME /usr/zeppelin
-ENV SPARK_HIGHCHART_VERSION 0.6.1
+ENV SPARK_HIGHCHART_VERSION 0.6.2
 
 RUN apt-get update \
   && apt-get install -y git curl sed xmlstarlet vim python-tk \
