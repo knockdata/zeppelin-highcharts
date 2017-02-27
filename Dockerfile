@@ -1,23 +1,21 @@
 FROM openjdk:8
 
-ENV BRANCH  v0.6.1
+ENV BRANCH  v0.6.2
 ENV ZEPPELIN_HOME /usr/zeppelin
-ENV SPARK_HIGHCHART_VERSION 0.6.2
+ENV SPARK_HIGHCHART_VERSION 0.6.4
 
 RUN apt-get update \
   && apt-get install -y git curl sed xmlstarlet vim python-tk \
   && curl -sL http://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
    | gunzip \
    | tar x -C /tmp/ \
-  && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-  && apt-get install git-lfs \
   && curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python \
   && pip install pandas \
   && git clone https://github.com/apache/zeppelin.git /tmp/zeppelin \
   && cd /tmp/zeppelin \
   && git checkout $BRANCH \
   && sed -i 's/"angular":/"highcharts": "^4.2.6","angular":/' /tmp/zeppelin/zeppelin-web/bower.json \
-  && sed -i 's#"highlightjs": {#"highcharts": {"main": ["highcharts.js","highcharts-more.js","modules/exporting.js","modules/drilldown.js","modules/maps.js"]},"highlightjs": {#' /tmp/zeppelin/zeppelin-web/bower.json \
+  && sed -i 's#"highlightjs": {#"highcharts": {"main": ["highcharts.js","highcharts-more.js","modules/exporting.js","modules/drilldown.js","modules/heatmap.js","modules/maps.js"]},"highlightjs": {#' /tmp/zeppelin/zeppelin-web/bower.json \
   && xmlstarlet ed -s /_:project/_:dependencies -t elem -n dependency -v spark-highcharts /tmp/zeppelin/spark-dependencies/pom.xml > pom2.xml \
   && sed -i "s:spark-highcharts:<groupId>com.knockdata</groupId><artifactId>spark-highcharts</artifactId><version>$SPARK_HIGHCHART_VERSION</version>:" pom2.xml \
   && mv -f pom2.xml /tmp/zeppelin/spark-dependencies/pom.xml \
