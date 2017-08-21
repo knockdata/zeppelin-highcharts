@@ -3,6 +3,7 @@ FROM openjdk:8
 ENV BRANCH  v0.7.2
 ENV ZEPPELIN_HOME /usr/zeppelin
 ENV SPARK_HIGHCHART_VERSION 0.6.5
+ENV SPARK_VERSION 2.1
 
 RUN apt-get update \
   && apt-get install -y git curl sed xmlstarlet vim python-tk \
@@ -20,7 +21,7 @@ RUN apt-get update \
   && sed -i "s:spark-highcharts:<groupId>com.knockdata</groupId><artifactId>spark-highcharts</artifactId><version>$SPARK_HIGHCHART_VERSION</version>:" pom2.xml \
   && mv -f pom2.xml /tmp/zeppelin/spark-dependencies/pom.xml \
   && cd /tmp/zeppelin \
-  && /tmp/apache-maven-3.3.9/bin/mvn package -Pbuild-distr -Ppyspark -Pspark-2.0 -Pscala-2.11 -DskipTests \
+  && /tmp/apache-maven-3.3.9/bin/mvn package -Pbuild-distr -Ppyspark -Pspark-$SPARK_VERSION -Pscala-2.11 -DskipTests \
   && tar xvf /tmp/zeppelin/zeppelin-distribution/target/zeppelin*.tar.gz -C /usr/ \
   && mv /usr/zeppelin* $ZEPPELIN_HOME \
   && mkdir -p $ZEPPELIN_HOME/logs \
