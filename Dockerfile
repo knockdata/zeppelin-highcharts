@@ -27,7 +27,7 @@ RUN apt-get update \
   && tar xvf /tmp/zeppelin/zeppelin-distribution/target/zeppelin*.tar.gz -C /usr/ \
   && mv /usr/zeppelin* $ZEPPELIN_HOME \
   && mkdir -p $ZEPPELIN_HOME/logs \
-  && mkdir -p $ZEPPELIN_HOME/run 
+  && mkdir -p $ZEPPELIN_HOME/run \
   && apt-get purge -y --force-yes xmlstarlet \
   && apt-get clean autoclean \
   && apt-get autoremove -y --force-yes \
