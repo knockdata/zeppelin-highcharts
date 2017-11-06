@@ -18,3 +18,4 @@ zeppelin-highcharts has renamed to [spark-highcharts](https://github.com/knockda
 
 0.7.2: Spark 2.1, Scala 2.11, Zeppelin 0.7.2
 
+0.7.3: Spark 2.2, Scala 2.11, Zeppelin 0.7.3
