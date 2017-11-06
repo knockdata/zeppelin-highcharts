@@ -14,24 +14,21 @@ RUN apt-get update \
   && pip install pandas \
   && git clone https://github.com/apache/zeppelin.git /tmp/zeppelin \
   && cd /tmp/zeppelin \
-  && git checkout $BRANCH 
-
-RUN echo '{ "allow_root": true } ' > /root/.bowerrc \
+  && git checkout $BRANCH \
+  && echo '{ "allow_root": true } ' > /root/.bowerrc \
   && sed -i 's/"angular":/"highcharts": "^4.2.6","angular":/' /tmp/zeppelin/zeppelin-web/bower.json \
   && sed -i 's#"highlightjs": {#"highcharts": {"main": ["highcharts.js","highcharts-more.js","modules/exporting.js","modules/drilldown.js","modules/heatmap.js","modules/maps.js"]},"highlightjs": {#' /tmp/zeppelin/zeppelin-web/bower.json \
   && sed -id 's/bower install --silent/bower install --allow-root --silent/' /tmp/zeppelin/zeppelin-web/package.json \
   && xmlstarlet ed -s /_:project/_:dependencies -t elem -n dependency -v spark-highcharts /tmp/zeppelin/spark-dependencies/pom.xml > pom2.xml \
   && sed -i "s:spark-highcharts:<groupId>com.knockdata</groupId><artifactId>spark-highcharts</artifactId><version>$SPARK_HIGHCHART_VERSION</version>:" pom2.xml \
-  && mv -f pom2.xml /tmp/zeppelin/spark-dependencies/pom.xml 
-
-RUN cd /tmp/zeppelin \
+  && mv -f pom2.xml /tmp/zeppelin/spark-dependencies/pom.xml \ 
+  && cd /tmp/zeppelin \
   && /tmp/apache-maven-3.3.9/bin/mvn package -Pbuild-distr -Ppyspark -Pspark-$SPARK_VERSION -Pscala-2.11 -DskipTests \
   && tar xvf /tmp/zeppelin/zeppelin-distribution/target/zeppelin*.tar.gz -C /usr/ \
   && mv /usr/zeppelin* $ZEPPELIN_HOME \
   && mkdir -p $ZEPPELIN_HOME/logs \
-  && mkdir -p $ZEPPELIN_HOME/run 
-
-RUN apt-get purge -y --force-yes xmlstarlet \
+  && mkdir -p $ZEPPELIN_HOME/run \
+  && apt-get purge -y --force-yes xmlstarlet \
   && apt-get clean autoclean \
   && apt-get autoremove -y --force-yes \
   && rm -rf /tmp/* \
